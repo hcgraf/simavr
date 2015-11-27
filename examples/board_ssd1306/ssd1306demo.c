@@ -75,7 +75,11 @@ displayCB (void)
 	// Select modelview matrix
 	glMatrixMode (GL_MODELVIEW);
 	glPushMatrix ();
+	glViewport(0,2*64,2*128,2*64);
 	// Start with an identity matrix
+	glLoadIdentity ();
+	ssd1306_gl_draw (&ssd1306);
+	glViewport(0,0,2*128,2*64);
 	glLoadIdentity ();
 	ssd1306_gl_draw (&ssd1306);
 	glPopMatrix ();
@@ -99,7 +103,7 @@ initGL (int w, int h, float pix_size)
 
 	// Double buffered, RGB disp mode.
 	glutInitDisplayMode (GLUT_RGB | GLUT_DOUBLE);
-	glutInitWindowSize (w * 4, h * 4);
+	glutInitWindowSize (w * 4, h * 8);
 	window_identifier = glutCreateWindow ("SSD1306 128x64 OLED");
 
 	// Set up projection matrix
