@@ -97,7 +97,7 @@ void keyCB(unsigned char key, int x, int y)	/* called on key press */
 			exit(0);
 			break;
 		case ' ':
-			do_button_press++; // pass the message to the AVR thread
+			do_button_press = 1; // pass the message to the AVR thread
 			break;
 		case 'r':
 			printf("Starting VCD trace\n");
@@ -106,6 +106,14 @@ void keyCB(unsigned char key, int x, int y)	/* called on key press */
 		case 's':
 			printf("Stopping VCD trace\n");
 			avr_vcd_stop(&vcd_file);
+			break;
+	}
+}
+void keyUpCB(unsigned char key, int x, int y)	/* called on key press */
+{
+	switch (key) {
+		case ' ':
+			do_button_press = 0; // pass the message to the AVR thread
 			break;
 	}
 }
@@ -131,8 +139,13 @@ static void * avr_run_thread(void * oaram)
 		avr_run(avr);
 		if (do_button_press != b_press) {
 			b_press = do_button_press;
-			printf("Button pressed\n");
-			button_press(&button, 1000000);
+			if (do_button_press) {
+				printf("Button pressed\n");
+				button_press(&button,0);
+			} else {
+				printf("Button released\n");
+				button_release(&button);
+			}
 		}
 	}
 	return NULL;
@@ -226,6 +239,7 @@ int main(int argc, char *argv[])
 
 	glutDisplayFunc(displayCB);		/* set window's display callback */
 	glutKeyboardFunc(keyCB);		/* set window's key callback */
+	glutKeyboardUpFunc(keyUpCB);
 	glutTimerFunc(1000 / 24, timerCB, 0);
 
 	// the AVR run on it's own thread. it even allows for debugging!

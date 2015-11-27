@@ -43,7 +43,7 @@ button_auto_release(
 }
 
 /*
- * button press. set the "pin" to zerok and register a timer
+ * button press. set the "pin" to zero and (optionally) register a timer
  * that will reset it in a few usecs
  */
 void
@@ -53,8 +53,19 @@ button_press(
 {
 	avr_cycle_timer_cancel(b->avr, button_auto_release, b);
 	avr_raise_irq(b->irq + IRQ_BUTTON_OUT, 0);// press
-	// register the auto-release
-	avr_cycle_timer_register_usec(b->avr, duration_usec, button_auto_release, b);
+	if (duration_usec > 0) {
+		// register the auto-release
+		avr_cycle_timer_register_usec(b->avr, duration_usec, button_auto_release, b);
+	}
+}
+/*
+ * button release. set the "pin" to one
+ */
+void
+button_release(
+		button_t * b)
+{
+	avr_raise_irq(b->irq + IRQ_BUTTON_OUT, 1);
 }
 
 void

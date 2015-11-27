@@ -52,4 +52,8 @@ button_press(
 		button_t * b,
 		uint32_t duration_usec);
 
+void
+button_release(
+		button_t * b);
+
 #endif /* __BUTTON_H__*/
