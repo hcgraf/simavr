@@ -81,7 +81,12 @@ displayCB (void)
 	ssd1306_gl_draw (&ssd1306);
 	glViewport(0,0,2*128,2*64);
 	glLoadIdentity ();
-	ssd1306_gl_draw (&ssd1306);
+	char *str = "test";
+	glRasterPos2s(5,10);
+	while (*str) {
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12,*str);
+		str++;
+	}
 	glPopMatrix ();
 	glutSwapBuffers ();
 }
